@@ -8,11 +8,12 @@
   "license": "MIT",
   "private": false,
   "scripts": {
-    "dev": "nodemon src/api/js",
+    "dev": "npx nodemon src/api.js",
     "start": "netlify-lambda serve src",
     "build": "netlify-lambda build src"
   },
   "dependencies": {
+    "axios": "^0.21.1",
     "body-parser": "^1.19.0",
     "cors": "^2.8.5",
     "debug": "^2.6.9",
@@ -25,6 +26,6 @@
   },
   "devDependencies": {
     "dotenv-webpack": "^6.0.0",
-    "nodemon": "^2.0.7"
+    "mocha": "^8.3.0"
   }
 }
