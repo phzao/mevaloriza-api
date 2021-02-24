@@ -10,7 +10,8 @@
   "scripts": {
     "dev": "npx nodemon src/api.js",
     "start": "netlify-lambda serve src",
-    "build": "netlify-lambda build src"
+    "build": "netlify-lambda build src",
+    "test:unit": "mocha src/**/*.test.js"
   },
   "dependencies": {
     "axios": "^0.21.1",

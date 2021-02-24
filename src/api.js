@@ -3,12 +3,13 @@
 const serverless = require('serverless-http');
 const bodyParser = require('body-parser');
 const express = require('express');
+const cors = require('cors');
 
 const { connect, set } = require('mongoose');
-const { connectionString } = require('./config');
-
 const { config } = require('dotenv');
-const cors = require('cors');
+
+const { connectionString } = require('./config');
+const { routes, urlRoute, isDev } = require('./routes');
 
 config();
 
@@ -26,10 +27,14 @@ const indexRoute = require('./routes/index-route');
 
 app.use(cors(corsOptions));
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.urlencoded({extended: false}));
 
-app.use('/.netlify/functions/api/phz', indexRoute);
+routes.map(item => {
+  app.use(urlRoute, function(...args) {
+    return item(...args);
+  });
+});
 
-app.listen(9000);
+isDev && app.listen(9000);
 
 module.exports.handler = serverless(app);

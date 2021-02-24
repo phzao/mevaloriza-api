@@ -1,3 +1,6 @@
+const systemConst = require('./system-constants');
+
 module.exports = {
-  ...require('./system-constants'),
+  ...systemConst,
 }
+
