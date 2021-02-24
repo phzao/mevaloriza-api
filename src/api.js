@@ -9,11 +9,13 @@ const { connect, set } = require('mongoose');
 const { config } = require('dotenv');
 
 const { connectionString } = require('./config');
-const { routes, urlRoute, isDev } = require('./routes');
+const { routes, urlRoute, isProdEnv } = require('./routes');
 
 config();
 
 const app = express();
+
+const isProd = isProdEnv(process.env.APP_ENV);
 
 // connect(connectionString, { useNewUrlParser: true, useUnifiedTopology: true});
 // set('useCreateIndex', true);
@@ -23,18 +25,17 @@ var corsOptions = {
   optionsSuccessStatus: 200,
 };
 
-const indexRoute = require('./routes/index-route');
 
 app.use(cors(corsOptions));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: false}));
 
-routes.map(item => {
-  app.use(urlRoute, function(...args) {
-    return item(...args);
+routes.map(routeItem => {
+  app.use(urlRoute(isProd), function(...args) {
+    return routeItem(...args);
   });
 });
 
-isDev && app.listen(9000);
+isProdEnv && app.listen(9000);
 
 module.exports.handler = serverless(app);
