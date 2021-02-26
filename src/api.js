@@ -1,7 +1,7 @@
 'use strict';
 
 const serverless = require('serverless-http');
-const bodyParser = require('body-parser');
+const { json, urlencoded } = require('body-parser');
 const express = require('express');
 const cors = require('cors');
 
@@ -16,7 +16,7 @@ config();
 const app = express();
 
 const isProd = isProdEnv(process.env.APP_ENV);
-
+  
 // connect(connectionString, { useNewUrlParser: true, useUnifiedTopology: true});
 // set('useCreateIndex', true);
 
@@ -27,8 +27,8 @@ var corsOptions = {
 
 
 app.use(cors(corsOptions));
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({extended: false}));
+app.use(json());
+app.use(urlencoded({extended: false}));
 
 routes.map(routeItem => {
   app.use(urlRoute(isProd), function(...args) {

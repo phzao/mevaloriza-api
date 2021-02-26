@@ -1,7 +1,7 @@
 const INTEGRATION_TYPE = 'integration';
-const COMMUNICATION_API_ERROR = 'External communication error!!';
+const UOL_ERROR = 'UOL API error';
 
 module.exports = {
 	INTEGRATION_TYPE,
-	COMMUNICATION_API_ERROR,
+	UOL_ERROR,
 };
