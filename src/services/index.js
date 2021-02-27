@@ -1,5 +1,5 @@
 const parse = require('./parse');
-const messagesApi = require('./messagesApi');
+const messagesApi = require('./messages');
 
 module.exports = {
 	...parse,

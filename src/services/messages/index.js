@@ -3,7 +3,7 @@
 	INTEGRATION_TYPE,
 	HTTP_BAD_REQUEST,
 	UOL_ERROR,
-} = require('../helpers');
+ } = require('../../helpers');
 
 const resOk = (content, res) => res && 
 	res

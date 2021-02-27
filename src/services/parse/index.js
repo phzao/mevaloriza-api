@@ -13,4 +13,4 @@ module.exports = {
 	parseArr,
 	parseSplitPos,
 	parseErrorMsg,
-};
+};               

@@ -1,0 +1,12 @@
+version: '3'
+services:
+    mongo:
+      image: "mongo:3-stretch"
+      container_name: mongodb-nodejs
+      ports:
+        - "27017:27017"
+    mongo-express:
+      image: "mongo-express:latest"
+      container_name: mongo-express-nodejs
+      ports:
+        - "8081:8081"
