@@ -1,7 +1,7 @@
 'use strict';
 
 const mongoose = require('mongoose');
-const { ENABLE_DISABLE } = require('./constants');
+const { ENABLE_DISABLE, STOCK_MODEL, STATUS_ENABLE } = require('../constants');
 const Schema = mongoose.Schema;
 
 const schema = new Schema({
@@ -27,6 +27,11 @@ const schema = new Schema({
 		default: STATUS_ENABLE,
 		required: [true, "Status is required!"],
 	},
+},
+{
+	versionKey: false,
 });
 
-module.exports = mongoose.model('Stock', schema);
+module.exports = {
+	StockModel: mongoose.model(STOCK_MODEL, schema),
+}

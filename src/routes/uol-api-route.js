@@ -34,4 +34,3 @@ router.get(`${BASE}/list`, async (req, res, next) => {
 
 module.exports = router;
  
-

@@ -1,8 +1,6 @@
-const systemConst = require('./system-constants');
-const messageConst = require('./message-constants');
+const systemConstants = require('./constants');
 
 module.exports = {
-  ...systemConst,
-	...messageConst,
+  ...systemConstants,
 }
 

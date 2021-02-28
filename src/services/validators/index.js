@@ -1,120 +1,108 @@
 'use strict';
 
+const { parseColumnToText } = require('../parse');
+
 let errors = {};
 
-ValidationContract = () => {
+function ValidationContract() {
   errors = {};
 }
 
-ValidationContract.prototype.isRequired = (body, field, message) => {
-  if (!body[field] || !body[field].length) {
-		addErrorMsg(field, message);
+const getNameText = field =>
+	parseColumnToText(field, "_");
+
+ValidationContract.prototype.isRequired = function(body, field) {
+  if (!body[field] || !String(body[field]).length) {
+		addErrorMsg(field, `${getNameText(field)} is required!`);
+		return false;
+  }
+	return true;
+};
+
+ValidationContract.prototype.hasMinLen = function(body, field, min) {
+  if(!this.isRequired(body, field)) return;
+
+  if (body[field].length < min) {
+    addErrorMsg(field, `${getNameText(field)} must be at least ${min} characters`);
   }
 };
 
-ValidationContract.prototype.hasMaxMinLen = (body, field, min, max, message) => {
-  if (!body[field] || body[field].length < min) {
-		addErrorMsg(field, message);
-  }
-
-  if (!body[field] || body[field].length > max) {
-		addErrorMsg(field, message);
-  }
-}
-
-ValidationContract.prototype.hasMinLen = (body, field, min, message) => {
-  if (!body[field] || body[field].length < min) {
-		addErrorMsg(field, message);
+ValidationContract.prototype.hasMaxLen = function(body, field, max) {
+  if(!this.isRequired(body, field)) return;
+  if (body[field].length > max) {
+    addErrorMsg(field, `${getNameText(field)} must be less than ${max}!`);
   }
 };
 
-ValidationContract.prototype.hasExacLen = (body, field, len, message) => {
-  if (!body[field] || body[field].length !== len) {
-		addErrorMsg(field, message);
+ValidationContract.prototype.hasMaxMinLen = function(body, field, min, max) {
+  if(!this.isRequired(body, field)) return;
+
+  this.hasMinLen(body, field, min);
+  this.hasMaxLen(body, field, max);
+};
+
+ValidationContract.prototype.hasExacLen = function(body, field, len) {
+  if(!this.isRequired(body, field)) return;
+
+  if (body[field].length !== len) {
+    addErrorMsg(field, `${getNameText(field)} must be exacly ${len} characters!`);
   }
 };
 
-ValidationContract.prototype.hasMaxLenOrNull = (body, field, len, message) => {
-  if (body[field] === null || body[field] === undefined) {
-		addErrorMsg(field, message);
-  }
+ValidationContract.prototype.isJson = function(body, field) {
+  if(!this.isRequired(body, field)) return;
 
-  if (body[field].length > len) {
-		addErrorMsg(field, message);
+  if (typeof body[field] !== 'object') {
+    addErrorMsg(field, `${getNameText(field)} must be a JSON type`);
   }
 };
 
-ValidationContract.prototype.hasMaxLen = (body, field, max, message) => {
-  if (!body[field] || body[field].length > max) {
-		addErrorMsg(field, message);
-  }
-};
-
-ValidationContract.prototype.isNumber = (
-  body,
-  field,
-  message,
-  decimals = 2,
-) => {
-  if (!body[field] || isNaN(+body[field])) {
-		addErrorMsg(field, message);
-  }
-};
-
-ValidationContract.prototype.isFixedLen = (body, field, len, message) => {
-  if (!body[field] || body[field].length !== Number(len)) {
-		addErrorMsg(field, message);
-  }
-};
-
-ValidationContract.prototype.isJson = (body, field, message) => {
-  if (typeof body[field] != 'object') {
-		addErrorMsg(field, message);
-  }
-};
-
-ValidationContract.prototype.errors = () => {
+ValidationContract.prototype.errors = function() {
   return errors;
 };
 
-ValidationContract.prototype.clear = () => {
+ValidationContract.prototype.clear = function() {
   errors = [];
 };
 
-ValidationContract.prototype.isValid = () => {
-  return Boolean(!errors.length);
+ValidationContract.prototype.isValid = function() {
+  return Boolean(!Object.keys(errors).length);
 };
 
-ValidationContract.prototype.isValidEnum = (body, field, enum, message) => {
-	if (!body[field] || !typeof body[field] !== 'String') {
-		addErrorMsg(field, message);
-	}
-	if (!enum.includes(body[field])) {
-		addErrorMsg(field, message);
-	}
-}
+ValidationContract.prototype.isValidEnum = function(body, field, enumList) {
+	if(!this.isRequired(body, field)) return
 
-ValidationContract.prototype.isArrayGreaterThan = (
-  body,
-  field,
-  len,
-  message,
-) => {
+  if (typeof body[field] !== 'string') {
+    addErrorMsg(field, `${getNameText(field)} must be a string!`);
+	}
+
+  if (!enumList.includes(body[field])) {
+    addErrorMsg(
+      field,
+      `${getNameText(field)} must be which one of ${JSON.stringify(enumList)}`,
+    );
+  }
+};
+
+ValidationContract.prototype.isArrayGreaterThan = function(body, field, len) {
+  if(!this.isRequired(body, field)) return;
+
   if (!body[field] || !Array.isArray(body[field]) || body[field].length < len) {
-		addErrorMsg(field, message);
+    addErrorMsg(field, `${getNameText(field)} must be less than ${len}!`);
   }
 };
 
-ValidationContract.prototype.isEmail = (value, message) => {
+ValidationContract.prototype.isEmail = function(email) {
   var reg = new RegExp(/^\w+([-+.']\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$/);
-  if (!reg.test(value)) {
-		addErrorMsg(field, message);
+  if (!reg.test(email)) {
+    addErrorMsg('email', `E-mail invalid!`);
   }
 };
 
-const addErrorMsg = (field, message) =>
-	error[field]
-		? error[field] = [...error[field], ...message]
-		: error[field] = message;
+const addErrorMsg = (field, message) => {
+  errors[field]
+    ? (errors[field] = [errors[field], message])
+    : (errors[field] = message);
+};
 
 module.exports = ValidationContract;
