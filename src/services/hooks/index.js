@@ -1,6 +1,8 @@
-const save = require('./save');
+const saveData = require('./save');
+const getData = require('./get');
 
 module.exports = {
-	...save,
+	...saveData,
+	...getData,
 };
 
