@@ -1,8 +1,8 @@
-const saveData = require('./save');
-const getData = require('./get');
+const validateData = require('./useValidate');
+const asyncData = require('./useAsynFn');
 
 module.exports = {
-	...saveData,
-	...getData,
+	...asyncData,
+	...validateData,
 };
 

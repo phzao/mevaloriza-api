@@ -7,39 +7,50 @@ const {
   resIntegrationError,
   resUnprocessableEntity,
   resBadRequest,
-	useSave,
-	useFetch,
+	persistDb,
+	mongoGet,
+	useValidate,
+	useAsyncFn,
+	formatSuccessMsg,
+	formatErrorMsg,
+	formatFailMsg,
 } = require('../services');
-
+                                                    
 const stockPost = async (req, res, next) => {
-  let validationStock = new ValidateStock();
-
   try {
-    validationStock.set(req.body);
-    const [stock, isValid, errors] = validationStock.isValid();
+    const [stock, isValid, errors] = useValidate(new ValidateStock(), req.body);
 
-    if (!isValid) return resUnprocessableEntity(errors, res);
+		if (!isValid)
+			return resUnprocessableEntity(errors, res, formatFailMsg);
 
-    const [stockSaved, err] = await useSave(STOCK_MODEL, stock);
+		const { fnSave } = persistDb(STOCK_MODEL);
 
-    if (!stockSaved) return resBadRequest(res, err);
+		const [stockSaved, err] = await useAsyncFn(fnSave, stock);
 
-    return resSaved(stockSaved, res);
+		if (!stockSaved)
+			return resBadRequest(res, formatErrorMsg, err);
+
+    return resSaved(stockSaved, res, formatSuccessMsg);
   } catch (err) {
     console.log('err', err);
-    return resIntegrationError(res);
+    return resIntegrationError(res, formatErrorMsg);
   }
 };
 
 const stockGet = async (req, res, next) => {
-	const [ stocks, err ] = await useFetch(STOCK_MODEL);
+	const { modelEntity } = persistDb(STOCK_MODEL);
+	const fnFind = mongoGet(modelEntity);
 
-	if (!err) return resOk(stocks, res);
+	const [ stocks, err ] = await useAsyncFn(fnFind, req.body);
 
-	return resBadRequest(res, 'Error when try find stock');
+	if (stocks)
+		return resOk(stocks, res, formatSuccessMsg);
+
+	return resBadRequest(res, formatErrorMsg, 'Error when trying find stock');
 }
 
 module.exports = {
   stockPost,
 	stockGet,
 };
+

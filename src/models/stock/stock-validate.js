@@ -14,8 +14,8 @@ ValidateStock.prototype.set = function(body) {
 	stock = {
 		name: body.name || null,
 		abbreviation: body.abbreviation || null,
-		source_id: body.source_id || null,
-		source_api: body.source_api || null,
+		id: body.source_id || null,
+		source: body.source_api || null,
 		status: body.status || STATUS_ENABLE,
 	};
 }
@@ -27,8 +27,8 @@ ValidateStock.prototype.isValid = function() {
 
 	contract.hasMaxMinLen(stock, 'abbreviation', 5, 6);
 	contract.isRequired(stock, 'name');
-	contract.isRequired(stock, 'source_id');
-	contract.isRequired(stock, 'source_api');
+	contract.isRequired(stock, 'id');
+	contract.isRequired(stock, 'source');
 	contract.isValidEnum(stock, 'status', ENABLE_DISABLE);
 
 	return [
