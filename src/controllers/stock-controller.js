@@ -1,5 +1,6 @@
 'use strict';
 
+const { ERROR_LIST } = require('../helpers');
 const { ValidateStock, STOCK_MODEL } = require('../models');
 const {
   resSaved,
@@ -50,7 +51,7 @@ const stockGet = async (req, res, next) => {
 	if (stocks)
 		return resOk(stocks, res, formatSuccessMsg);
 
-	return resBadRequest(res, formatErrorMsg, 'Error when trying find stock');
+	return resBadRequest(res, formatErrorMsg, ERROR_LIST);
 }
 
 module.exports = {

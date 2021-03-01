@@ -16,24 +16,23 @@ const {
 	useValidate,
 } = require('../services');
 
-const { UOL_API_URL, UOL_SOURCE } = require('../helpers');
+const { UOL_SOURCE, UOL_STOCK_LIST, NOT_ALLOWED } = require('../helpers');
 const { STOCK_MODEL, ValidateStock } = require('../models');
 
 const syncStockList = async (req, res, next) => {
 
   if (req.body.pass !== process.env.INTEGRATIONTOKEN)
-    return resBadRequest(res, formatErrorMsg, 'Request not allowed');
-
-  const urlList = `${UOL_API_URL}asset/list/?format=JSON&fields=abbreviation,id,name`;
+    return resBadRequest(res, formatErrorMsg, NOT_ALLOWED); 
 
   try {
-    const result = await get(urlList);
-    const { data } = result;
-    const list = parseArr(data.docs).map(parseUolStock);
+    const result = await get(UOL_STOCK_LIST);
 
-		const { modelEntity } = persistDb(STOCK_MODEL);
+    const list = parseArr(result.data.docs).map(parseUolStock);
+
+		const { modelEntity, fnSave } = persistDb(STOCK_MODEL);
 		const fnFind = mongoGet(modelEntity);
 		const [ stocks, err ] = await useAsyncFn(fnFind);
+
 		if (!result || err) 
 			return resBadRequest(res, formatErrorMsg, SYNC_UOL_ERROR);
 
@@ -48,7 +47,7 @@ const syncStockList = async (req, res, next) => {
 					...newStock,
 					source: UOL_SOURCE,
 				}
-				const { fnSave } = persistDb(STOCK_MODEL);
+
 				const [stock, isValid, errModel] = useValidate(new ValidateStock(), myStock);
 
 				if (!isValid) return errModel;
@@ -72,3 +71,4 @@ const syncStockList = async (req, res, next) => {
 module.exports = {
 	syncStockList,
 };
+
