@@ -17,6 +17,10 @@ const {
 } = require('../services');
                                                     
 const stockPost = async (req, res, next) => {
+
+  if (req.body.pass !== process.env.INTEGRATIONTOKEN)
+    return resBadRequest(res, formatErrorMsg, 'Request not allowed');
+	
   try {
     const [stock, isValid, errors] = useValidate(new ValidateStock(), req.body);
 
