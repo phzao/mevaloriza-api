@@ -14,8 +14,8 @@ ValidateStock.prototype.set = function(body) {
 	stock = {
 		name: body.name || null,
 		abbreviation: body.abbreviation || null,
-		id: body.source_id || null,
-		source: body.source_api || null,
+		id: body.id || null,
+		source: body.source || null,
 		status: body.status || STATUS_ENABLE,
 	};
 }

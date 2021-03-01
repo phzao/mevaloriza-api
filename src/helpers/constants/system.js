@@ -10,6 +10,8 @@ const HTTP_UNAUTHORIZED = 401;
 const HTTP_FORBIDDEN = 403;
 const URL_LOCAL = '/api';
 const URL_NETLIFY = '/.netlify/functions/api';
+const UOL_API_URL = 'https://api.cotacoes.uol.com/';
+const UOL_SOURCE = 'uol';
 
 module.exports = {
   STATUS_ENABLE,
@@ -24,4 +26,6 @@ module.exports = {
   HTTP_FORBIDDEN,
   URL_LOCAL,
   URL_NETLIFY,
+	UOL_API_URL,
+	UOL_SOURCE,
 };
