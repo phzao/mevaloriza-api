@@ -1,4 +1,8 @@
 'use strict';
 
-exports.mongoGet = model => async data => await model.find(data);
+const mongoGet = model => async data => await model.find(data);
+
+module.exports = {
+  mongoGet,
+};
 

@@ -34,7 +34,7 @@ const syncStockList = async (req, res, next) => {
 		const [ stocks, err ] = await useAsyncFn(fnFind);
 
 		if (!result || err) 
-			return resBadRequest(res, formatErrorMsg, SYNC_UOL_ERROR);
+			return resBadRequest(res, formatErrorMsg,YNC_UOL_ERROR);
 
 		const unSavedList = list
 			.filter(item =>
