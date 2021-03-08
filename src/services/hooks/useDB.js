@@ -2,9 +2,9 @@
 
 const mongoose = require('mongoose');
 
-//const getById = (id) => {
-
-//};
+const getById = (id) => {
+  console.log("chegou", id)
+};
 
 //const byStatusAndId = (params, schema) => {
 
@@ -14,9 +14,10 @@ const mongoose = require('mongoose');
 
 //};
 
-//const useMongo = () => ({ geBy: () => console.log("foi") })
+const useMongo = () => {
+  const 
+};
 
 module.exports = {
-  useMongo: () => {},
 };
 

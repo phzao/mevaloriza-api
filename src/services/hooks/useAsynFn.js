@@ -9,7 +9,6 @@ const useAsyncFn = async (fnAsync, params) => {
 		return res({ data });
 
 	} catch (err) {
-    console.log('errrrr', err);
 		return res({ err });
 	}
 };

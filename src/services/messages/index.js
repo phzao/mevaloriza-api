@@ -6,6 +6,7 @@ const {
 	UOL_ERROR,
 	HTTP_UNPROCESSABLE_ENTITY,
 	HTTP_SAVED,
+  HTTP_NOT_FOUND,
  } = require('../../helpers');
 
 const formatSuccessMsg = content => ({
@@ -48,6 +49,11 @@ const resBadRequest = (res, fnFormat, message = 'Request unprocessed!') =>
 		.status(HTTP_BAD_REQUEST)
 	  .send(fnFormat(message));
 
+const resNotFound = (res, fnFormat, message) =>
+  res
+    .status(HTTP_NOT_FOUND)
+    .send(fnFormat(message));
+
 module.exports = {
 	resOk,
 	resUnprocessableEntity,
@@ -57,5 +63,6 @@ module.exports = {
 	formatErrorMsg,
 	formatFailMsg,
 	formatSuccessMsg,
+  resNotFound,
 };
 

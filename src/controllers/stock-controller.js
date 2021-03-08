@@ -2,6 +2,7 @@
 
 const { ERROR_LIST, STATUS_DISABLE } = require('../helpers');
 const { ValidateStock, STOCK_MODEL } = require('../models');
+const { useStock } = require('../repositories');
 const {
   resSaved,
 	resOk,
@@ -15,7 +16,7 @@ const {
 	formatSuccessMsg,
 	formatErrorMsg,
 	formatFailMsg,
-  //useMongo,
+  resNotFound,
 } = require('../services');
                                                     
 const stockPost = async (req, res, next) => {
@@ -45,6 +46,7 @@ const stockPost = async (req, res, next) => {
 const stockUpdate = async (req, res, next) => {
   const { modelEntity } = persistDb(STOCK_MODEL)
   const fnFind = mongoGet(modelEntity)
+
 };
 
 const stockDisableAll = async (req, res, next) => {
@@ -69,24 +71,35 @@ const stockDisableAll = async (req, res, next) => {
 	return resBadRequest(res, formatErrorMsg, err);
 };
 
-const stockGet = async (req, res, next) => {
-  const { useMongo } = require('../services')
-  console.log("usemong", useMongo());
-  //console.log("getById", getById);
-	//const { modelEntity } = persistDb(STOCK_MODEL);
-	//const fnFind = mongoGet(modelEntity);
+const stockGetById = async (req, res, next) => {
+  const { getById } = useStock(); 
+  
+  const [stock, err] = await useAsyncFn(getById, req.params.id);
 
-	//const [stocks, err] = await useAsyncFn(fnFind, req.body);
+  if (stock)
+    return resOk(stock, res, formatSuccessMsg);
 
-	//if (stocks)
-		//return resOk(stocks, res, formatSuccessMsg);
+  if (err)
+    return resNotFound(res, formatFailMsg, err.message);
 
-	return resBadRequest(res, formatErrorMsg, ERROR_LIST);
+	return resBadRequest(res, formatErrorMsg, error_list);
+}
+
+const stockGetAllBy = async (req, res, next) => {
+  const { getAllBy } = useStock();
+  
+  const [stocks, err] = await useAsyncFn(getAllBy, req.query);
+
+  if (stocks)
+    return resOk(stocks, res, formatSuccessMsg);
+
+	return resBadRequest(res, formatErrorMsg, error_list);
 }
 
 module.exports = {
   stockPost,
-	stockGet,
+	stockGetAllBy,
+	stockGetById,
   stockDisableAll,
 };
 
